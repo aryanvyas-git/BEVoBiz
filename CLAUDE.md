@@ -42,21 +42,40 @@ top 5 products last month?") and get back a table/chart answer.
 
 ## Phase plan
 
-1. **Phase 1 — Foundation & Auth** (current phase): project scaffolding,
-   Docker Compose Postgres+pgvector, Alembic, `businesses`/`users`
-   tables, JWT signup/login/me, React auth pages + protected dashboard.
+1. **Phase 1 — Foundation & Auth**: project scaffolding, Docker Compose
+   Postgres+pgvector, Alembic, `businesses`/`users` tables, JWT
+   signup/login/me, React auth pages + protected dashboard.
 2. **Phase 2 — Inventory CRUD**: products table (business-scoped), CRUD
    endpoints and UI.
 3. **Phase 3 — Sales recording**: sales + sale line item tables with
    snapshot pricing (see hard rule 3), recording UI.
-4. **Phase 4 — NL-to-SQL engine**: Ollama integration behind the LLM
-   adapter, RAG-based schema grounding, SELECT-only safety layer.
-5. **Phase 5 — Search bar UI**: natural-language input with table, bar
-   chart, and pie chart output rendering.
+4. **Phase 4 — NL-to-SQL engine** (complete): swappable LLM adapter +
+   Ollama, a SELECT-only SQL safety/validation layer with a scoped
+   read-only executor, an LLM SQL-generation pipeline on top of it, and
+   a protected `POST /nlq/ask` endpoint. Vector/RAG schema grounding was
+   deliberately **not** built — the current two-table schema is small
+   enough for static schema context to work well; logged as a future
+   enhancement (see `backend/app/nlq/schema_context.py`) for whenever the
+   schema grows enough to need it.
+5. **Phase 5 — Search bar UI** (current phase): natural-language input
+   with table, bar chart, and pie chart output rendering, calling
+   `POST /nlq/ask`.
 6. **Phase 6 — Polish & hardening**: production hardening, error
-   handling, security review, UX polish.
+   handling, security review, UX polish. Includes: create a dedicated
+   low-privilege Postgres role (SELECT-only on products/sales/businesses,
+   no write grants anywhere) for the NLQ executor to connect as, instead
+   of reusing the app's normal role. Deferred from Phase 4 sub-step 4b —
+   the validator + business-scope rewrite + per-query READ ONLY
+   transaction already make writes structurally unreachable, so this is
+   an additional defense-in-depth layer, not a gap in the current one.
 
 ## Current phase
 
-**Phase 3.** Do not build the AI search bar or embeddings yet — those
-belong to later phases. Scope is limited to sales recording.
+**Phase 5.** Phase 4 is complete: LLM adapter (4a), SQL safety layer (4b),
+question-to-SQL pipeline (4c), and the `POST /nlq/ask` endpoint (4d) are
+all built and verified under `backend/app/nlq/` and `backend/app/llm/`.
+RAG/vector schema grounding was deliberately deferred (see Phase 4 note
+above) — not a gap, a deferred enhancement for when the schema is bigger.
+Scope now is the Phase 5 search bar UI: a natural-language input calling
+`POST /nlq/ask`, rendering its `rows`/`columns` as a table plus bar/pie
+chart views. Do not build Phase 6 hardening yet.
