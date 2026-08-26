@@ -7,7 +7,7 @@ from app.database import get_db
 from app.deps import get_current_user
 from app.llm import LLMAdapterError
 from app.models.user import User
-from app.nlq import ValidationError, question_to_sql_and_run
+from app.nlq import ValidationError, question_to_sql_and_run, summarize_answer
 from app.schemas.nlq import AskRequest, AskResponse
 
 logger = logging.getLogger(__name__)
@@ -61,8 +61,17 @@ def ask(
 
     rows = result["rows"]
     columns = list(rows[0].keys()) if rows else []
+
+    # Best-effort natural-language summary. This never raises (see
+    # app.nlq.summarize) and never touches the DB or generates SQL — it
+    # only phrases the rows we already fetched. A failure here must not
+    # take down the table/chart data, so it's deliberately outside the
+    # try/except above that handles SQL generation/execution failures.
+    answer = summarize_answer(result["question"], columns, rows)
+
     return AskResponse(
         question=result["question"],
+        answer=answer,
         generated_sql=result["sql"],
         rows=rows,
         columns=columns,

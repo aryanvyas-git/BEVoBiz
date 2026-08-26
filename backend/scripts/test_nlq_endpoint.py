@@ -16,6 +16,9 @@ import sys
 import httpx
 
 BASE_URL = "http://localhost:8000"
+# /nlq/ask now makes two sequential local-model calls (SQL generation, then
+# answer summarization) — a short default timeout is too easy to trip.
+REQUEST_TIMEOUT = 60.0
 TEST_EMAIL = "nlq-endpoint-test@example.com"
 TEST_PASSWORD = "supersecret1"
 TEST_BUSINESS_NAME = "NLQ Endpoint Test Co"
@@ -66,7 +69,12 @@ def ensure_seed_data(headers: dict) -> None:
 
 
 def ask(question: str, headers: dict) -> httpx.Response:
-    return httpx.post(f"{BASE_URL}/nlq/ask", headers=headers, json={"question": question})
+    return httpx.post(
+        f"{BASE_URL}/nlq/ask",
+        headers=headers,
+        json={"question": question},
+        timeout=REQUEST_TIMEOUT,
+    )
 
 
 def main() -> None:
@@ -81,6 +89,7 @@ def main() -> None:
     resp = ask("What is our total revenue?", headers)
     body = resp.json()
     print(body)
+    print(f"  answer: {body.get('answer')!r}")
     ok = (
         resp.status_code == 200
         and body["executed"] is True
@@ -107,6 +116,7 @@ def main() -> None:
     resp = ask("sdkjfh skdjfh 12345 !!! asjdh purple triangle Tuesday", headers)
     body = resp.json()
     print(resp.status_code, body)
+    print(f"  answer: {body.get('answer')!r}")
     ok = resp.status_code == 200 and (
         body["executed"] is True or (body["executed"] is False and body["error"])
     )

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import InventoryView from '../components/InventoryView'
 import SalesHistoryView from '../components/SalesHistoryView'
+import NlqSearch from '../components/NlqSearch'
 
 export default function Dashboard() {
   const { business, logout } = useAuth()
@@ -24,6 +25,8 @@ export default function Dashboard() {
           Logout
         </button>
       </header>
+
+      <NlqSearch />
 
       <div className="tab-bar">
         <button

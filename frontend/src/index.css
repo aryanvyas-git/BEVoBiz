@@ -328,3 +328,74 @@ button:disabled {
 .running-total strong {
   font-size: 1.1rem;
 }
+
+.nlq-search-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nlq-search-form {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.nlq-search-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.nlq-search-form button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.nlq-thinking {
+  margin: 0.9rem 0 0;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.nlq-result {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #eee;
+}
+
+.nlq-answer {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 1rem;
+}
+
+.nlq-view-toggle {
+  margin-bottom: 1rem;
+}
+
+.nlq-table-wrap {
+  overflow-x: auto;
+}
+
+.nlq-sql-detail {
+  margin-top: 1rem;
+}
+
+.nlq-sql-code {
+  margin-top: 0.5rem;
+  padding: 0.9rem 1rem;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

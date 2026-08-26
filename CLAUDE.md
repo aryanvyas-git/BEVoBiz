@@ -57,9 +57,14 @@ top 5 products last month?") and get back a table/chart answer.
    enough for static schema context to work well; logged as a future
    enhancement (see `backend/app/nlq/schema_context.py`) for whenever the
    schema grows enough to need it.
-5. **Phase 5 — Search bar UI** (current phase): natural-language input
-   with table, bar chart, and pie chart output rendering, calling
-   `POST /nlq/ask`.
+5. **Phase 5 — Search bar UI** (complete): natural-language search bar on
+   the dashboard calling `POST /nlq/ask`, with a plain-English answer
+   headline, a Table/Bar chart/Pie chart view toggle (generic — no
+   hardcoded column names, degrades to a friendly message when a result
+   isn't chartable), and an expandable "Show query" SQL detail. The
+   backend also gained a second, rows-only LLM call
+   (`app.nlq.summarize_answer`) that phrases the natural-language answer
+   without touching the database or generating SQL.
 6. **Phase 6 — Polish & hardening**: production hardening, error
    handling, security review, UX polish. Includes: create a dedicated
    low-privilege Postgres role (SELECT-only on products/sales/businesses,
@@ -71,11 +76,9 @@ top 5 products last month?") and get back a table/chart answer.
 
 ## Current phase
 
-**Phase 5.** Phase 4 is complete: LLM adapter (4a), SQL safety layer (4b),
-question-to-SQL pipeline (4c), and the `POST /nlq/ask` endpoint (4d) are
-all built and verified under `backend/app/nlq/` and `backend/app/llm/`.
-RAG/vector schema grounding was deliberately deferred (see Phase 4 note
-above) — not a gap, a deferred enhancement for when the schema is bigger.
-Scope now is the Phase 5 search bar UI: a natural-language input calling
-`POST /nlq/ask`, rendering its `rows`/`columns` as a table plus bar/pie
-chart views. Do not build Phase 6 hardening yet.
+**Phase 6.** Phases 1–5 are complete and pushed. The AI search bar
+(Phase 5) is live on the dashboard, backed by the full Phase 4 NL-to-SQL
+engine plus a natural-language answer summary. Scope now is Phase 6:
+production hardening, error handling, security review, UX polish —
+including the deferred low-privilege Postgres role for the NLQ executor
+(see the Phase 6 bullet above). Do not build new product features.

@@ -21,6 +21,7 @@ class AskRequest(BaseModel):
 
 class AskResponse(BaseModel):
     question: str
+    answer: Optional[str] = None
     generated_sql: Optional[str] = None
     rows: Optional[list[dict[str, Any]]] = None
     columns: Optional[list[str]] = None
