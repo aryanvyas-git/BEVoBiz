@@ -58,6 +58,6 @@ top 5 products last month?") and get back a table/chart answer.
 
 ## Current phase
 
-**Phase 1.** Do not build inventory, sales, embeddings, or AI search
+**Phase 2.** Do not build sales recording, embeddings, or AI search
 functionality yet — those belong to later phases. Scope is limited to
-foundation, auth, and scaffolding.
+inventory (products) CRUD.

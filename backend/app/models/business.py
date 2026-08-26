@@ -16,3 +16,4 @@ class Business(Base):
     )
 
     users = relationship("User", back_populates="business", cascade="all, delete-orphan")
+    products = relationship("Product", back_populates="business", cascade="all, delete-orphan")
