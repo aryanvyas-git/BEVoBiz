@@ -281,3 +281,50 @@ button:disabled {
   color: #333;
   margin-bottom: 1rem;
 }
+
+.success-text {
+  color: #16a34a;
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+  background: none;
+  color: #666;
+  padding: 0.6rem 1rem;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  font-weight: 600;
+}
+
+.stock-available {
+  font-size: 0.9rem;
+  color: #444;
+  margin: 0;
+}
+
+.running-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+.running-total strong {
+  font-size: 1.1rem;
+}

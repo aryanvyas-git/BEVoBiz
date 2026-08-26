@@ -58,6 +58,5 @@ top 5 products last month?") and get back a table/chart answer.
 
 ## Current phase
 
-**Phase 2.** Do not build sales recording, embeddings, or AI search
-functionality yet — those belong to later phases. Scope is limited to
-inventory (products) CRUD.
+**Phase 3.** Do not build the AI search bar or embeddings yet — those
+belong to later phases. Scope is limited to sales recording.
