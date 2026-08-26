@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { askQuestion } from '../api/nlq'
+import { getErrorMessage } from '../api/errors'
 import NlqSearchBar from './NlqSearchBar'
 import NlqResultPanel from './NlqResultPanel'
 
@@ -16,10 +17,7 @@ export default function NlqSearch() {
       const data = await askQuestion(question)
       setResult(data)
     } catch (err) {
-      const detail = err.response?.data?.detail
-      setNetworkError(
-        typeof detail === 'string' ? detail : 'Could not reach the server. Please try again.',
-      )
+      setNetworkError(getErrorMessage(err, 'Could not reach the server. Please try again.'))
     } finally {
       setLoading(false)
     }

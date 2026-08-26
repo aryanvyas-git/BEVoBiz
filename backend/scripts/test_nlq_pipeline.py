@@ -15,7 +15,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.database import SessionLocal  # noqa: E402
 from app.llm import LLMAdapterError  # noqa: E402
 from app.nlq import ValidationError, question_to_sql_and_run  # noqa: E402
 
@@ -31,24 +30,21 @@ QUESTIONS = [
 
 
 def main() -> None:
-    db = SessionLocal()
     successes = 0
-    try:
-        for question in QUESTIONS:
-            print(f"Q: {question}")
-            try:
-                result = question_to_sql_and_run(question, BUSINESS_ID, db)
-            except (ValidationError, LLMAdapterError) as exc:
-                print(f"  FAILED ({type(exc).__name__}): {exc}")
-                print()
-                continue
-
-            print(f"  SQL:  {result['sql']}")
-            print(f"  ROWS: {result['rows']}")
+    for question in QUESTIONS:
+        print(f"Q: {question}")
+        try:
+            result = question_to_sql_and_run(question, BUSINESS_ID)
+        except (ValidationError, LLMAdapterError) as exc:
+            print(f"  FAILED ({type(exc).__name__}): {exc}")
             print()
-            successes += 1
-    finally:
-        db.close()
+            continue
+
+        print(f"  SQL:     {result['sql']}")
+        print(f"  COLUMNS: {result['columns']}")
+        print(f"  ROWS:    {result['rows']}")
+        print()
+        successes += 1
 
     print(f"{successes} / {len(QUESTIONS)} questions produced a valid, executed query.")
 

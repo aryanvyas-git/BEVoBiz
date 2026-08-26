@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
+from pydantic import BaseModel, EmailStr, ConfigDict, Field, field_validator
 
 
 class SignupRequest(BaseModel):
-    business_name: str
+    business_name: str = Field(max_length=200)
     email: EmailStr
-    password: str
+    password: str = Field(max_length=128)
 
     @field_validator("business_name")
     @classmethod
@@ -25,7 +25,7 @@ class SignupRequest(BaseModel):
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(max_length=128)
 
 
 class TokenResponse(BaseModel):

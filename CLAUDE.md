@@ -65,20 +65,21 @@ top 5 products last month?") and get back a table/chart answer.
    backend also gained a second, rows-only LLM call
    (`app.nlq.summarize_answer`) that phrases the natural-language answer
    without touching the database or generating SQL.
-6. **Phase 6 — Polish & hardening**: production hardening, error
-   handling, security review, UX polish. Includes: create a dedicated
-   low-privilege Postgres role (SELECT-only on products/sales/businesses,
-   no write grants anywhere) for the NLQ executor to connect as, instead
-   of reusing the app's normal role. Deferred from Phase 4 sub-step 4b —
-   the validator + business-scope rewrite + per-query READ ONLY
-   transaction already make writes structurally unreachable, so this is
-   an additional defense-in-depth layer, not a gap in the current one.
+6. **Phase 6 — Polish & hardening** (complete): a dedicated low-privilege
+   Postgres role (`bevobiz_nlq_reader` — SELECT-only on
+   products/sales/businesses, no write grant anywhere, no access to
+   users; see `db/init/002_nlq_readonly_role.sql`) that `app.nlq.executor`
+   now connects as via its own engine (`app.nlq.db`), instead of reusing
+   the app's normal role — this closes the item deferred from Phase 4
+   sub-step 4b. Also: fixed the known 4d gap where a zero-row NLQ result
+   reported empty `columns`; a global exception handler so no endpoint
+   ever leaks a stack trace; consistent loading/error/empty states
+   app-wide; a shared frontend error-message helper (fixes a real crash
+   risk where a 422 validation array was rendered directly as a React
+   child); basic input-length/range validation on every POST/PUT body.
 
 ## Current phase
 
-**Phase 6.** Phases 1–5 are complete and pushed. The AI search bar
-(Phase 5) is live on the dashboard, backed by the full Phase 4 NL-to-SQL
-engine plus a natural-language answer summary. Scope now is Phase 6:
-production hardening, error handling, security review, UX polish —
-including the deferred low-privilege Postgres role for the NLQ executor
-(see the Phase 6 bullet above). Do not build new product features.
+**Phase 6 is complete.** Phases 1–6 (foundation through hardening) are
+done, tested, and pushed. Do not build new product features without an
+explicit new phase — this file should be updated whenever one starts.

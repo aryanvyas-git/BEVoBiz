@@ -1,9 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from app.database import get_db
 from app.deps import get_current_user
 from app.llm import LLMAdapterError
 from app.models.user import User
@@ -19,7 +17,6 @@ router = APIRouter(prefix="/nlq", tags=["nlq"])
 def ask(
     payload: AskRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
 ) -> AskResponse:
     """Answer a natural-language question about the current business's own
     products/sales data.
@@ -27,7 +24,10 @@ def ask(
     business_id always comes from the authenticated user, never from the
     request body — the model itself is told not to filter by business_id
     at all (see app.nlq.schema_context), and app.nlq.enforce_business_scope
-    would strip any attempt to override it regardless.
+    would strip any attempt to override it regardless. Note there's no
+    `db` dependency here: the NLQ pipeline connects to Postgres itself,
+    as a dedicated low-privilege role (see app.nlq.db) — this endpoint
+    never touches the app's normal database session at all.
 
     This always returns HTTP 200; whether the question was actually
     answered is carried in the `executed` field. Expected failure modes
@@ -36,7 +36,7 @@ def ask(
     message or stack trace — with the real detail logged server-side.
     """
     try:
-        result = question_to_sql_and_run(payload.question, current_user.business_id, db)
+        result = question_to_sql_and_run(payload.question, current_user.business_id)
     except ValidationError as exc:
         logger.info("NLQ question rejected by safety layer (question=%r): %s", payload.question, exc)
         return AskResponse(
@@ -60,7 +60,7 @@ def ask(
         )
 
     rows = result["rows"]
-    columns = list(rows[0].keys()) if rows else []
+    columns = result["columns"]
 
     # Best-effort natural-language summary. This never raises (see
     # app.nlq.summarize) and never touches the DB or generates SQL — it

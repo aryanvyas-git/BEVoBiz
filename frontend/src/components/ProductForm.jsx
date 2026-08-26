@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { getErrorMessage } from '../api/errors'
 
 export default function ProductForm({ initialProduct, onSubmit, onCancel }) {
   const [name, setName] = useState(initialProduct?.name ?? '')
@@ -24,12 +25,7 @@ export default function ProductForm({ initialProduct, onSubmit, onCancel }) {
         quantity_in_stock: Number(quantityInStock),
       })
     } catch (err) {
-      const detail = err.response?.data?.detail
-      if (Array.isArray(detail)) {
-        setError(detail.map((d) => d.msg).join('; '))
-      } else {
-        setError(detail || 'Something went wrong')
-      }
+      setError(getErrorMessage(err, 'Something went wrong'))
     } finally {
       setSubmitting(false)
     }

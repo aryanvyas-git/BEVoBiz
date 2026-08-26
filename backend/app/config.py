@@ -18,5 +18,14 @@ class Settings:
     LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen2.5-coder:7b")
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
+    # Connects as a dedicated low-privilege role (SELECT-only on
+    # products/sales/businesses, no access to users) — see
+    # db/init/002_nlq_readonly_role.sql and app/nlq/db.py. The NLQ safe
+    # executor uses this instead of DATABASE_URL; nothing else does.
+    NLQ_DATABASE_URL: str = os.getenv(
+        "NLQ_DATABASE_URL",
+        "postgresql+psycopg://bevobiz_nlq_reader:bevobiz_nlq_reader_dev_pw@localhost:5432/bevobiz",
+    )
+
 
 settings = Settings()

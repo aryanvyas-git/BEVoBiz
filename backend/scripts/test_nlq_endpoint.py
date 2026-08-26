@@ -90,7 +90,7 @@ def main() -> None:
     body = resp.json()
     print(body)
     print(f"  answer: {body.get('answer')!r}")
-    ok = (
+    ok = bool(
         resp.status_code == 200
         and body["executed"] is True
         and body["error"] is None
@@ -117,8 +117,9 @@ def main() -> None:
     body = resp.json()
     print(resp.status_code, body)
     print(f"  answer: {body.get('answer')!r}")
-    ok = resp.status_code == 200 and (
-        body["executed"] is True or (body["executed"] is False and body["error"])
+    ok = bool(
+        resp.status_code == 200
+        and (body["executed"] is True or (body["executed"] is False and bool(body["error"])))
     )
     print(
         "PASS" if ok else "FAIL",

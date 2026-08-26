@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Modal from './Modal'
 import { createSale } from '../api/sales'
+import { getErrorMessage } from '../api/errors'
 
 function toDatetimeLocalValue(date) {
   const pad = (n) => String(n).padStart(2, '0')
@@ -35,7 +36,7 @@ export default function RecordSaleModal({ product, onClose, onSuccess }) {
       })
       onSuccess(sale)
     } catch (err) {
-      setError(err.response?.data?.detail || 'Could not record sale')
+      setError(getErrorMessage(err, 'Could not record sale'))
     } finally {
       setSubmitting(false)
     }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { getErrorMessage } from '../api/errors'
 
 export default function Signup() {
   const [businessName, setBusinessName] = useState('')
@@ -19,7 +20,7 @@ export default function Signup() {
       await signup(businessName, email, password)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Signup failed')
+      setError(getErrorMessage(err, 'Signup failed'))
     } finally {
       setSubmitting(false)
     }

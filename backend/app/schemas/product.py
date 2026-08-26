@@ -2,12 +2,19 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, computed_field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
+
+# products.cost_price/selling_price are NUMERIC(12, 2) columns — 10 digits
+# before the decimal point. Rejecting anything past that here up front
+# turns a would-be Postgres numeric-overflow error (an opaque 500) into a
+# clean 422 with a real message.
+MAX_PRICE = Decimal("9999999999.99")
+MAX_QUANTITY = 10_000_000
 
 
 class ProductCreate(BaseModel):
-    name: str
-    category: Optional[str] = None
+    name: str = Field(max_length=200)
+    category: Optional[str] = Field(default=None, max_length=100)
     cost_price: Decimal
     selling_price: Decimal
     quantity_in_stock: int = 0
@@ -29,22 +36,26 @@ class ProductCreate(BaseModel):
 
     @field_validator("cost_price", "selling_price")
     @classmethod
-    def price_non_negative(cls, v: Decimal) -> Decimal:
+    def price_in_range(cls, v: Decimal) -> Decimal:
         if v < 0:
             raise ValueError("price must be >= 0")
+        if v > MAX_PRICE:
+            raise ValueError(f"price must be <= {MAX_PRICE}")
         return v
 
     @field_validator("quantity_in_stock")
     @classmethod
-    def quantity_non_negative(cls, v: int) -> int:
+    def quantity_in_range(cls, v: int) -> int:
         if v < 0:
             raise ValueError("quantity_in_stock must be >= 0")
+        if v > MAX_QUANTITY:
+            raise ValueError(f"quantity_in_stock must be <= {MAX_QUANTITY}")
         return v
 
 
 class ProductUpdate(BaseModel):
-    name: Optional[str] = None
-    category: Optional[str] = None
+    name: Optional[str] = Field(default=None, max_length=200)
+    category: Optional[str] = Field(default=None, max_length=100)
     cost_price: Optional[Decimal] = None
     selling_price: Optional[Decimal] = None
     quantity_in_stock: Optional[int] = None
@@ -68,16 +79,24 @@ class ProductUpdate(BaseModel):
 
     @field_validator("cost_price", "selling_price")
     @classmethod
-    def price_non_negative(cls, v: Optional[Decimal]) -> Optional[Decimal]:
-        if v is not None and v < 0:
+    def price_in_range(cls, v: Optional[Decimal]) -> Optional[Decimal]:
+        if v is None:
+            return v
+        if v < 0:
             raise ValueError("price must be >= 0")
+        if v > MAX_PRICE:
+            raise ValueError(f"price must be <= {MAX_PRICE}")
         return v
 
     @field_validator("quantity_in_stock")
     @classmethod
-    def quantity_non_negative(cls, v: Optional[int]) -> Optional[int]:
-        if v is not None and v < 0:
+    def quantity_in_range(cls, v: Optional[int]) -> Optional[int]:
+        if v is None:
+            return v
+        if v < 0:
             raise ValueError("quantity_in_stock must be >= 0")
+        if v > MAX_QUANTITY:
+            raise ValueError(f"quantity_in_stock must be <= {MAX_QUANTITY}")
         return v
 
 

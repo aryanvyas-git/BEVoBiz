@@ -12,6 +12,13 @@ body {
   min-height: 100vh;
 }
 
+.page-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
 .auth-card {
   background: #fff;
   padding: 2rem 2.5rem;

@@ -8,8 +8,6 @@ just because a model produced it.
 """
 from typing import Any
 
-from sqlalchemy.orm import Session
-
 from app.llm import get_llm_adapter
 from app.nlq.executor import run_safe_query
 from app.nlq.schema_context import SCHEMA_DESCRIPTION
@@ -17,11 +15,11 @@ from app.nlq.sql_extraction import extract_sql_from_response
 from app.nlq.validator import validate_sql
 
 
-def question_to_sql_and_run(question: str, business_id: int, db: Session) -> dict[str, Any]:
+def question_to_sql_and_run(question: str, business_id: int) -> dict[str, Any]:
     """Ask the LLM to translate `question` into SQL, then validate, scope,
     and run it for `business_id`.
 
-    Returns {"question", "sql", "rows"} on success. Raises
+    Returns {"question", "sql", "columns", "rows"} on success. Raises
     app.llm.LLMAdapterError if the model can't be reached, or
     app.nlq.ValidationError if the model's SQL doesn't pass the safety
     layer — both exceptions carry messages that are safe to show directly.
@@ -35,10 +33,11 @@ def question_to_sql_and_run(question: str, business_id: int, db: Session) -> dic
     # (which re-validates independently rather than trusting any caller)
     # is deliberate, not redundant work worth avoiding.
     cleaned_sql = validate_sql(candidate_sql)
-    rows = run_safe_query(candidate_sql, business_id, db)
+    columns, rows = run_safe_query(candidate_sql, business_id)
 
     return {
         "question": question,
         "sql": cleaned_sql,
+        "columns": columns,
         "rows": rows,
     }

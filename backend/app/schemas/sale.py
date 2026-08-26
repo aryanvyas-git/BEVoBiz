@@ -15,6 +15,8 @@ class SaleCreate(BaseModel):
     def quantity_positive(cls, v: int) -> int:
         if v <= 0:
             raise ValueError("quantity must be > 0")
+        if v > 10_000_000:
+            raise ValueError("quantity must be <= 10000000")
         return v
 
 

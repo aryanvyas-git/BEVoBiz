@@ -16,7 +16,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 logging.getLogger("sqlglot").setLevel(logging.ERROR)  # silence benign parse-fallback notices
 
-from app.database import SessionLocal  # noqa: E402
 from app.nlq import ValidationError, run_safe_query  # noqa: E402
 
 BUSINESS_ID = 1
@@ -24,22 +23,18 @@ OTHER_BUSINESS_ID = 2
 
 
 def expect_valid(label: str, sql: str, business_id: int = BUSINESS_ID) -> bool:
-    db = SessionLocal()
     try:
-        rows = run_safe_query(sql, business_id, db)
-        print(f"PASS  {label}  ({len(rows)} row(s))")
+        columns, rows = run_safe_query(sql, business_id)
+        print(f"PASS  {label}  ({len(rows)} row(s), columns={columns})")
         return True
     except Exception as exc:
         print(f"FAIL  {label}  -- expected to run, but raised {type(exc).__name__}: {exc}")
         return False
-    finally:
-        db.close()
 
 
 def expect_rejected(label: str, sql: str, business_id: int = BUSINESS_ID) -> bool:
-    db = SessionLocal()
     try:
-        run_safe_query(sql, business_id, db)
+        run_safe_query(sql, business_id)
         print(f"FAIL  {label}  -- expected rejection, but it ran")
         return False
     except ValidationError as exc:
@@ -48,24 +43,18 @@ def expect_rejected(label: str, sql: str, business_id: int = BUSINESS_ID) -> boo
     except Exception as exc:
         print(f"FAIL  {label}  -- rejected, but wrong exception type {type(exc).__name__}: {exc}")
         return False
-    finally:
-        db.close()
 
 
 def test_scope_is_enforced() -> bool:
     """Prove the scope enforcer decides visibility, not the query text."""
-    db = SessionLocal()
     try:
-        rows = run_safe_query(
+        _columns, rows = run_safe_query(
             f"SELECT * FROM products WHERE business_id = {OTHER_BUSINESS_ID}",
             business_id=BUSINESS_ID,
-            db=db,
         )
     except Exception as exc:
         print(f"FAIL  scope enforcer: raised unexpectedly: {exc}")
         return False
-    finally:
-        db.close()
 
     if any(row.get("business_id") == OTHER_BUSINESS_ID for row in rows):
         print("FAIL  scope enforcer: another business's rows leaked through")
@@ -83,6 +72,30 @@ def test_scope_is_enforced() -> bool:
         f"filter (query asked for business_id={OTHER_BUSINESS_ID} while "
         f"scoped to business_id={BUSINESS_ID}; got 0 rows either way)"
     )
+    return True
+
+
+def test_zero_row_columns() -> bool:
+    """A query that matches nothing must still report its real column
+    names (the Phase 6 fix for the known 4d gap), not an empty list."""
+    expected = ["name", "quantity_in_stock"]
+    try:
+        columns, rows = run_safe_query(
+            "SELECT name, quantity_in_stock FROM products WHERE quantity_in_stock < 0",
+            business_id=BUSINESS_ID,
+        )
+    except Exception as exc:
+        print(f"FAIL  zero-row columns: raised unexpectedly: {exc}")
+        return False
+
+    if rows:
+        print(f"FAIL  zero-row columns: expected 0 rows, got {len(rows)}")
+        return False
+    if columns != expected:
+        print(f"FAIL  zero-row columns: expected columns={expected}, got {columns}")
+        return False
+
+    print(f"PASS  zero-row columns: 0 rows but columns={columns} (not empty)")
     return True
 
 
@@ -145,6 +158,9 @@ def main() -> None:
 
     # --- Cross-tenant scope proof ---
     results.append(test_scope_is_enforced())
+
+    # --- Zero-row columns fix ---
+    results.append(test_zero_row_columns())
 
     passed = sum(1 for r in results if r)
     total = len(results)

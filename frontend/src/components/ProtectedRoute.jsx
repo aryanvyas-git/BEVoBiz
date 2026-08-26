@@ -5,7 +5,11 @@ export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth()
 
   if (loading) {
-    return null
+    return (
+      <div className="page-loading">
+        <p className="muted-text">Loading…</p>
+      </div>
+    )
   }
 
   if (!isAuthenticated) {
