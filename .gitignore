@@ -1,0 +1,27 @@
+# Python
+backend/venv/
+backend/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Env files
+.env
+backend/.env
+frontend/.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+
+# Docker / Postgres data
+pgdata/
+postgres_data/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log

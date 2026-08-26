@@ -1,0 +1,57 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+
+export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+    setSubmitting(true)
+    try {
+      await login(email, password)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Login failed')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>Log in</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <span className="error-text">{error}</span>}
+          <button type="submit" disabled={submitting}>
+            {submitting ? 'Logging in…' : 'Log in'}
+          </button>
+        </form>
+        <div className="switch-link">
+          Need an account? <Link to="/signup">Sign up</Link>
+        </div>
+      </div>
+    </div>
+  )
+}
