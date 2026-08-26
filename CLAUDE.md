@@ -78,8 +78,25 @@ top 5 products last month?") and get back a table/chart answer.
    risk where a 422 validation array was rendered directly as a React
    child); basic input-length/range validation on every POST/PUT body.
 
+## UI/UX design system
+
+A cohesive visual design system was applied across the whole frontend as
+a separate batch of work on top of Phase 6 (purely visual — no
+functionality, API calls, or data flow changed). It lives entirely in
+`frontend/src/index.css` as CSS custom properties on `:root`: one primary
+accent (`--color-primary`, indigo), a neutral scale, and semantic
+success/danger/warning colors, plus consistent radius/shadow/spacing
+tokens reused by every component via shared class names (buttons, inputs,
+modals, tables, the segmented `.tab-bar` control used for both the
+dashboard tabs and the search result view toggle). Auth pages, the
+dashboard app shell, inventory/sales tables, and the AI search
+result/chart area all draw from the same tokens. When adding new UI,
+reuse these tokens and existing shared classes rather than hardcoding
+colors/spacing.
+
 ## Current phase
 
-**Phase 6 is complete.** Phases 1–6 (foundation through hardening) are
-done, tested, and pushed. Do not build new product features without an
-explicit new phase — this file should be updated whenever one starts.
+**Phase 6 is complete**, including the follow-up UI/UX redesign. Phases
+1–6 (foundation through hardening and polish) are done, tested, and
+pushed. Do not build new product features without an explicit new
+phase — this file should be updated whenever one starts.

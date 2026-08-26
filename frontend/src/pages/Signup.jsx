@@ -29,6 +29,10 @@ export default function Signup() {
   return (
     <div className="auth-page">
       <div className="auth-card">
+        <div className="brand">
+          <span className="brand-mark">B</span>
+          <span className="brand-name">BEVoBIZ</span>
+        </div>
         <h1>Create your account</h1>
         <form onSubmit={handleSubmit}>
           <input

@@ -13,7 +13,14 @@ import {
 } from 'recharts'
 
 const MAX_CHART_ROWS = 30
-const PIE_COLORS = ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#7c3aed', '#0891b2', '#db2777', '#65a30d']
+const PRIMARY_COLOR = '#4f46e5'
+const CHART_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4', '#84cc16']
+const TOOLTIP_STYLE = {
+  borderRadius: 10,
+  border: '1px solid #e5e7eb',
+  boxShadow: '0 4px 16px rgba(16, 24, 40, 0.08)',
+  fontSize: '0.85rem',
+}
 
 function isNumeric(value) {
   return typeof value === 'number' && Number.isFinite(value)
@@ -67,21 +74,28 @@ export default function NlqChart({ columns, rows, type }) {
       <ResponsiveContainer width="100%" height={320}>
         {type === 'bar' ? (
           <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={60} />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="value" fill="#2563eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#eef0f5" />
+            <XAxis
+              dataKey="label"
+              angle={-30}
+              textAnchor="end"
+              interval={0}
+              height={60}
+              tick={{ fontSize: 12, fill: '#667085' }}
+            />
+            <YAxis tick={{ fontSize: 12, fill: '#667085' }} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: '#f5f6fb' }} />
+            <Bar dataKey="value" fill={PRIMARY_COLOR} radius={[6, 6, 0, 0]} />
           </BarChart>
         ) : (
           <PieChart>
             <Pie data={data} dataKey="value" nameKey="label" outerRadius={110} label>
               {data.map((_, i) => (
-                <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip contentStyle={TOOLTIP_STYLE} />
+            <Legend wrapperStyle={{ fontSize: '0.85rem' }} />
           </PieChart>
         )}
       </ResponsiveContainer>

@@ -25,6 +25,7 @@ export default function NlqSearch() {
 
   return (
     <div className="nlq-search-section">
+      <h2 className="nlq-search-heading">Ask anything about your business</h2>
       <NlqSearchBar onAsk={handleAsk} loading={loading} />
       {loading && <p className="nlq-thinking">Thinking…</p>}
       {networkError && <p className="error-text">{networkError}</p>}

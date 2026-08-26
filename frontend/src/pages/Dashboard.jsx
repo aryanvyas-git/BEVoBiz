@@ -18,36 +18,45 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="inventory-page">
-      <header className="inventory-header">
-        <h1>Welcome, {business ? business.name : '…'}</h1>
-        <button className="btn-danger" onClick={handleLogout}>
-          Logout
-        </button>
+    <div>
+      <header className="app-shell-header">
+        <div className="app-shell-header-inner">
+          <div className="brand">
+            <span className="brand-mark">B</span>
+            <h1>
+              <strong>{business ? business.name : '…'}</strong>
+            </h1>
+          </div>
+          <button className="btn-secondary" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </header>
 
-      <NlqSearch />
+      <div className="inventory-page">
+        <NlqSearch />
 
-      <div className="tab-bar">
-        <button
-          className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
-          onClick={() => setActiveTab('inventory')}
-        >
-          Inventory
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'sales' ? 'active' : ''}`}
-          onClick={() => setActiveTab('sales')}
-        >
-          Sales history
-        </button>
+        <div className="tab-bar">
+          <button
+            className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
+            onClick={() => setActiveTab('inventory')}
+          >
+            Inventory
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'sales' ? 'active' : ''}`}
+            onClick={() => setActiveTab('sales')}
+          >
+            Sales history
+          </button>
+        </div>
+
+        {activeTab === 'inventory' ? (
+          <InventoryView onSaleRecorded={() => setSalesRefreshKey((k) => k + 1)} />
+        ) : (
+          <SalesHistoryView refreshKey={salesRefreshKey} />
+        )}
       </div>
-
-      {activeTab === 'inventory' ? (
-        <InventoryView onSaleRecorded={() => setSalesRefreshKey((k) => k + 1)} />
-      ) : (
-        <SalesHistoryView refreshKey={salesRefreshKey} />
-      )}
     </div>
   )
 }
