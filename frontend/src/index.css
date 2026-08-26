@@ -131,12 +131,34 @@ button:disabled {
   gap: 0.5rem;
 }
 
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .search-form input {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.9rem;
   min-width: 220px;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.35rem;
+  background: none;
+  color: #888;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.15rem 0.4rem;
+  border-radius: 50%;
+}
+
+.search-clear-btn:hover {
+  background: #eee;
+  color: #333;
 }
 
 .muted-text {

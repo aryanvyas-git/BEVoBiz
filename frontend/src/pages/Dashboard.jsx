@@ -55,14 +55,13 @@ export default function Dashboard() {
 
   async function handleFormSubmit(values) {
     if (editingProduct) {
-      const updated = await updateProduct(editingProduct.id, values)
-      setProducts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
+      await updateProduct(editingProduct.id, values)
     } else {
-      const created = await createProduct(values)
-      setProducts((prev) => [created, ...prev])
+      await createProduct(values)
     }
     setFormOpen(false)
     setEditingProduct(null)
+    await fetchProducts()
   }
 
   async function handleDeleteConfirm() {
@@ -83,6 +82,11 @@ export default function Dashboard() {
     fetchProducts(search)
   }
 
+  function handleClearSearch() {
+    setSearch('')
+    fetchProducts('')
+  }
+
   return (
     <div className="inventory-page">
       <header className="inventory-header">
@@ -94,12 +98,24 @@ export default function Dashboard() {
 
       <div className="inventory-toolbar">
         <form onSubmit={handleSearchSubmit} className="search-form">
-          <input
-            type="text"
-            placeholder="Search by name…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="search-input-wrap">
+            <input
+              type="text"
+              placeholder="Search by name…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                type="button"
+                className="search-clear-btn"
+                onClick={handleClearSearch}
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            )}
+          </div>
           <button type="submit" className="btn-secondary">
             Search
           </button>

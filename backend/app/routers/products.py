@@ -48,7 +48,7 @@ def list_products(
         query = query.filter(Product.name.ilike(f"%{search}%"))
     if category:
         query = query.filter(Product.category == category)
-    return query.order_by(Product.created_at.desc()).all()
+    return query.order_by(Product.name.asc()).all()
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
