@@ -137,7 +137,7 @@ export default function InventoryView({ onSaleRecorded }) {
         <p className="muted-text">Loading products…</p>
       ) : products.length === 0 ? (
         <div className="empty-state">
-          <p>No products yet — add your first one.</p>
+          <p>📦 No products yet — add your first one.</p>
           <button onClick={openAddForm}>Add product</button>
         </div>
       ) : (

@@ -37,7 +37,7 @@ export default function SalesHistoryView({ refreshKey }) {
   if (sales.length === 0) {
     return (
       <div className="empty-state">
-        <p>No sales yet — record your first one from the inventory tab.</p>
+        <p>🧾 No sales yet — record your first one from the inventory tab.</p>
       </div>
     )
   }

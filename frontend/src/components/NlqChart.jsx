@@ -13,13 +13,14 @@ import {
 } from 'recharts'
 
 const MAX_CHART_ROWS = 30
-const PRIMARY_COLOR = '#4f46e5'
-const CHART_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4', '#84cc16']
+const PRIMARY_COLOR = '#ea6a42'
+const CHART_COLORS = ['#ea6a42', '#e8a23f', '#dc4b3f', '#4c9a8f', '#b5657a', '#f0c14b', '#a85c32', '#7ea172']
 const TOOLTIP_STYLE = {
-  borderRadius: 10,
-  border: '1px solid #e5e7eb',
-  boxShadow: '0 4px 16px rgba(16, 24, 40, 0.08)',
+  borderRadius: 12,
+  border: '1px solid #f1e2d1',
+  boxShadow: '0 8px 24px rgba(61, 46, 34, 0.12)',
   fontSize: '0.85rem',
+  fontFamily: 'Nunito, sans-serif',
 }
 
 function isNumeric(value) {
@@ -50,7 +51,7 @@ function pickAxes(columns, sampleRow) {
 
 export default function NlqChart({ columns, rows, type }) {
   if (!rows || rows.length === 0) {
-    return <p className="muted-text">No data to chart.</p>
+    return <p className="muted-text">📊 No data to chart.</p>
   }
 
   const axes = pickAxes(columns, rows[0])
@@ -58,7 +59,7 @@ export default function NlqChart({ columns, rows, type }) {
   if (!axes) {
     return (
       <p className="muted-text">
-        This answer is best viewed as text/table — it doesn't have a category and a number to plot.
+        💡 This answer is best viewed as text/table — it doesn't have a category and a number to plot.
       </p>
     )
   }
@@ -74,28 +75,42 @@ export default function NlqChart({ columns, rows, type }) {
       <ResponsiveContainer width="100%" height={320}>
         {type === 'bar' ? (
           <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eef0f5" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1e2d1" />
             <XAxis
               dataKey="label"
               angle={-30}
               textAnchor="end"
               interval={0}
               height={60}
-              tick={{ fontSize: 12, fill: '#667085' }}
+              tick={{ fontSize: 12, fill: '#8a7461' }}
             />
-            <YAxis tick={{ fontSize: 12, fill: '#667085' }} />
-            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: '#f5f6fb' }} />
-            <Bar dataKey="value" fill={PRIMARY_COLOR} radius={[6, 6, 0, 0]} />
+            <YAxis tick={{ fontSize: 12, fill: '#8a7461' }} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: '#fff3ec' }} />
+            <Bar
+              dataKey="value"
+              fill={PRIMARY_COLOR}
+              radius={[8, 8, 0, 0]}
+              animationDuration={700}
+              animationEasing="ease-out"
+            />
           </BarChart>
         ) : (
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="label" outerRadius={110} label>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="label"
+              outerRadius={110}
+              label
+              animationDuration={700}
+              animationEasing="ease-out"
+            >
               {data.map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
               ))}
             </Pie>
             <Tooltip contentStyle={TOOLTIP_STYLE} />
-            <Legend wrapperStyle={{ fontSize: '0.85rem' }} />
+            <Legend wrapperStyle={{ fontSize: '0.85rem', fontFamily: 'Nunito, sans-serif' }} />
           </PieChart>
         )}
       </ResponsiveContainer>

@@ -80,19 +80,30 @@ top 5 products last month?") and get back a table/chart answer.
 
 ## UI/UX design system
 
-A cohesive visual design system was applied across the whole frontend as
-a separate batch of work on top of Phase 6 (purely visual — no
-functionality, API calls, or data flow changed). It lives entirely in
-`frontend/src/index.css` as CSS custom properties on `:root`: one primary
-accent (`--color-primary`, indigo), a neutral scale, and semantic
-success/danger/warning colors, plus consistent radius/shadow/spacing
-tokens reused by every component via shared class names (buttons, inputs,
-modals, tables, the segmented `.tab-bar` control used for both the
-dashboard tabs and the search result view toggle). Auth pages, the
-dashboard app shell, inventory/sales tables, and the AI search
-result/chart area all draw from the same tokens. When adding new UI,
-reuse these tokens and existing shared classes rather than hardcoding
-colors/spacing.
+A cohesive visual design system is applied across the whole frontend, as
+separate visual-only batches of work with no functionality, API calls, or
+data flow changed. It lives entirely in `frontend/src/index.css` as CSS
+custom properties on `:root`, reused by every component via shared class
+names (buttons, inputs, modals, tables, the segmented `.tab-bar` control
+used for both the dashboard tabs and the search result view toggle).
+
+Current palette: warm/friendly — a coral primary accent (`--color-primary`,
+plus `--gradient-warm` for brand/hero moments), warm-tinted neutrals
+(`--color-bg`/`--color-text`/etc. lean cream/brown rather than cold gray),
+and semantic success/danger/warning colors tuned to sit alongside the warm
+palette. Typography pairs Quicksand (headings/brand, `--font-heading`)
+with Nunito (body, `--font-sans`), both rounded and friendly. Generous
+border-radius tokens (`--radius-sm` through `--radius-xl`) and warm-tinted
+layered shadows (`--shadow-sm/md/lg`) are used everywhere for the rounded,
+soft-depth look. Motion (fade-ins, modal open/close, button hover lift, a
+bouncing-dots "Thinking…" indicator, chart entrance animation) is defined
+via shared `@keyframes` and respects `prefers-reduced-motion: reduce`
+(global override at the bottom of `index.css`).
+
+Auth pages, the dashboard app shell, inventory/sales tables, and the AI
+search result/chart area all draw from the same tokens. When adding new
+UI, reuse these tokens and existing shared classes rather than
+hardcoding colors/spacing/fonts.
 
 ## Current phase
 

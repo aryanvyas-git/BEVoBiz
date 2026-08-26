@@ -58,7 +58,7 @@ export default function NlqResultPanel({ result }) {
       <div className="nlq-view-body">
         {view === 'table' ? (
           rows.length === 0 ? (
-            <p className="muted-text">No rows returned.</p>
+            <p className="muted-text">🔍 Your query ran but returned no data.</p>
           ) : (
             <div className="nlq-table-wrap">
               <table className="products-table">
