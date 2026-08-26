@@ -4,11 +4,12 @@ path (sub-step 4c). Run directly:
 
     cd backend && source venv/bin/activate && python scripts/test_nlq_pipeline.py
 
-Asks the live Ollama model a handful of real questions about business 1's
-data, prints the SQL it generated and the rows that came back, and reports
-whether each one succeeded. This is for manual eyeballing of SQL quality —
-it is not a safety test (that's scripts/test_sql_safety.py, which doesn't
-touch the LLM at all).
+Asks the configured LLM provider (whatever LLM_PROVIDER/LLM_MODEL resolve
+to — Groq by default, or Ollama if set) a handful of real questions about
+business 1's data, prints the SQL it generated and the rows that came
+back, and reports whether each one succeeded. This is for manual
+eyeballing of SQL quality — it is not a safety test (that's
+scripts/test_sql_safety.py, which doesn't touch the LLM at all).
 """
 import sys
 from pathlib import Path

@@ -14,9 +14,10 @@ class Settings:
     JWT_EXPIRE_MINUTES: int = int(os.getenv("JWT_EXPIRE_MINUTES", "1440"))
     FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
 
-    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama")
-    LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen2.5-coder:7b")
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "groq")
+    LLM_MODEL: str = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 
     # Connects as a dedicated low-privilege role (SELECT-only on
     # products/sales/businesses, no access to users) — see

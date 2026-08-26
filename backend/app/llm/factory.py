@@ -15,11 +15,16 @@ def get_llm_adapter() -> LLMAdapter:
     """
     provider = settings.LLM_PROVIDER.lower()
 
+    if provider == "groq":
+        from app.llm.groq_adapter import GroqAdapter
+
+        return GroqAdapter(model=settings.LLM_MODEL, api_key=settings.GROQ_API_KEY)
+
     if provider == "ollama":
         from app.llm.ollama_adapter import OllamaAdapter
 
         return OllamaAdapter(model=settings.LLM_MODEL, base_url=settings.OLLAMA_BASE_URL)
 
     raise LLMAdapterError(
-        f"Unknown LLM_PROVIDER '{settings.LLM_PROVIDER}'. Supported providers: ollama."
+        f"Unknown LLM_PROVIDER '{settings.LLM_PROVIDER}'. Supported providers: groq, ollama."
     )

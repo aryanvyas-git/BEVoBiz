@@ -16,8 +16,9 @@ import sys
 import httpx
 
 BASE_URL = "http://localhost:8000"
-# /nlq/ask now makes two sequential local-model calls (SQL generation, then
-# answer summarization) — a short default timeout is too easy to trip.
+# /nlq/ask makes two sequential LLM calls (SQL generation, then answer
+# summarization) — a short default timeout is too easy to trip, especially
+# against a local Ollama model.
 REQUEST_TIMEOUT = 60.0
 TEST_EMAIL = "nlq-endpoint-test@example.com"
 TEST_PASSWORD = "supersecret1"
