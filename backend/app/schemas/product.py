@@ -18,6 +18,7 @@ class ProductCreate(BaseModel):
     cost_price: Decimal
     selling_price: Decimal
     quantity_in_stock: int = 0
+    reorder_level: int = 0
 
     @field_validator("name")
     @classmethod
@@ -43,13 +44,13 @@ class ProductCreate(BaseModel):
             raise ValueError(f"price must be <= {MAX_PRICE}")
         return v
 
-    @field_validator("quantity_in_stock")
+    @field_validator("quantity_in_stock", "reorder_level")
     @classmethod
     def quantity_in_range(cls, v: int) -> int:
         if v < 0:
-            raise ValueError("quantity_in_stock must be >= 0")
+            raise ValueError("quantity must be >= 0")
         if v > MAX_QUANTITY:
-            raise ValueError(f"quantity_in_stock must be <= {MAX_QUANTITY}")
+            raise ValueError(f"quantity must be <= {MAX_QUANTITY}")
         return v
 
 
@@ -59,6 +60,7 @@ class ProductUpdate(BaseModel):
     cost_price: Optional[Decimal] = None
     selling_price: Optional[Decimal] = None
     quantity_in_stock: Optional[int] = None
+    reorder_level: Optional[int] = None
 
     @field_validator("name")
     @classmethod
@@ -88,15 +90,15 @@ class ProductUpdate(BaseModel):
             raise ValueError(f"price must be <= {MAX_PRICE}")
         return v
 
-    @field_validator("quantity_in_stock")
+    @field_validator("quantity_in_stock", "reorder_level")
     @classmethod
     def quantity_in_range(cls, v: Optional[int]) -> Optional[int]:
         if v is None:
             return v
         if v < 0:
-            raise ValueError("quantity_in_stock must be >= 0")
+            raise ValueError("quantity must be >= 0")
         if v > MAX_QUANTITY:
-            raise ValueError(f"quantity_in_stock must be <= {MAX_QUANTITY}")
+            raise ValueError(f"quantity must be <= {MAX_QUANTITY}")
         return v
 
 
@@ -110,6 +112,7 @@ class ProductResponse(BaseModel):
     cost_price: Decimal
     selling_price: Decimal
     quantity_in_stock: int
+    reorder_level: int
     created_at: datetime
     updated_at: datetime
 
@@ -117,3 +120,12 @@ class ProductResponse(BaseModel):
     @property
     def profit_per_unit(self) -> Decimal:
         return self.selling_price - self.cost_price
+
+    @computed_field
+    @property
+    def stock_status(self) -> str:
+        if self.quantity_in_stock == 0:
+            return "out_of_stock"
+        if self.quantity_in_stock <= self.reorder_level:
+            return "low_stock"
+        return "in_stock"

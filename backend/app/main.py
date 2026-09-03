@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.routers import auth, nlq, products, sales
+from app.routers import auth, dashboard, nlq, products, sales
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(products.router)
 app.include_router(sales.router)
+app.include_router(dashboard.router)
 app.include_router(nlq.router)
 
 

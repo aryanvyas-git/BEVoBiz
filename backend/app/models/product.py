@@ -22,6 +22,7 @@ class Product(Base):
     cost_price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     selling_price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     quantity_in_stock: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    reorder_level: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
     )
