@@ -11,14 +11,21 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import {
+  CHART_COLORS,
+  CHART_GRID,
+  CHART_MUTED_TEXT,
+  CHART_PRIMARY,
+  CHART_PRIMARY_LIGHT,
+  CHART_TOOLTIP_BORDER,
+} from '../utils/theme'
 
 const MAX_CHART_ROWS = 30
-const PRIMARY_COLOR = '#ea6a42'
-const CHART_COLORS = ['#ea6a42', '#e8a23f', '#dc4b3f', '#4c9a8f', '#b5657a', '#f0c14b', '#a85c32', '#7ea172']
+const PRIMARY_COLOR = CHART_PRIMARY
 const TOOLTIP_STYLE = {
   borderRadius: 12,
-  border: '1px solid #f1e2d1',
-  boxShadow: '0 8px 24px rgba(61, 46, 34, 0.12)',
+  border: `1px solid ${CHART_TOOLTIP_BORDER}`,
+  boxShadow: '0 8px 24px rgba(43, 36, 56, 0.14)',
   fontSize: '0.85rem',
   fontFamily: 'Nunito, sans-serif',
 }
@@ -75,17 +82,17 @@ export default function NlqChart({ columns, rows, type }) {
       <ResponsiveContainer width="100%" height={320}>
         {type === 'bar' ? (
           <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1e2d1" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
             <XAxis
               dataKey="label"
               angle={-30}
               textAnchor="end"
               interval={0}
               height={60}
-              tick={{ fontSize: 12, fill: '#8a7461' }}
+              tick={{ fontSize: 12, fill: CHART_MUTED_TEXT }}
             />
-            <YAxis tick={{ fontSize: 12, fill: '#8a7461' }} />
-            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: '#fff3ec' }} />
+            <YAxis tick={{ fontSize: 12, fill: CHART_MUTED_TEXT }} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: CHART_PRIMARY_LIGHT }} />
             <Bar
               dataKey="value"
               fill={PRIMARY_COLOR}

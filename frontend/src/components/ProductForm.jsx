@@ -9,6 +9,7 @@ export default function ProductForm({ initialProduct, onSubmit, onCancel }) {
   const [quantityInStock, setQuantityInStock] = useState(
     initialProduct?.quantity_in_stock ?? 0,
   )
+  const [reorderLevel, setReorderLevel] = useState(initialProduct?.reorder_level ?? 0)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -23,6 +24,7 @@ export default function ProductForm({ initialProduct, onSubmit, onCancel }) {
         cost_price: costPrice,
         selling_price: sellingPrice,
         quantity_in_stock: Number(quantityInStock),
+        reorder_level: Number(reorderLevel),
       })
     } catch (err) {
       setError(getErrorMessage(err, 'Something went wrong'))
@@ -73,6 +75,18 @@ export default function ProductForm({ initialProduct, onSubmit, onCancel }) {
           onChange={(e) => setQuantityInStock(e.target.value)}
           required
         />
+      </label>
+      <label>
+        Reorder level
+        <input
+          type="number"
+          step="1"
+          min="0"
+          value={reorderLevel}
+          onChange={(e) => setReorderLevel(e.target.value)}
+          required
+        />
+        <span className="field-hint">Flag this product as low stock at or below this quantity.</span>
       </label>
       {error && <span className="error-text">{error}</span>}
       <div className="product-form-actions">
